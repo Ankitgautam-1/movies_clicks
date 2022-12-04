@@ -5,17 +5,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies_clicks/common_export.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_paginated_cubit.dart';
+import 'package:movies_clicks/modules/homepage/cubit/popular_movies_cubit.dart';
 import 'package:movies_clicks/modules/homepage/model/movies_data.models.dart';
 import 'package:movies_clicks/modules/homepage/widgets/loading.widgets.dart';
 
-class MovieListPage extends StatefulWidget {
-  const MovieListPage({super.key});
+class PopularMovieList extends StatefulWidget {
+  const PopularMovieList({super.key});
 
   @override
-  State<MovieListPage> createState() => _MovieListPageState();
+  State<PopularMovieList> createState() => _PopularMovieListState();
 }
 
-class _MovieListPageState extends State<MovieListPage> {
+class _PopularMovieListState extends State<PopularMovieList> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -29,11 +30,11 @@ class _MovieListPageState extends State<MovieListPage> {
       if (_scrollController.position.atEdge && _scrollController.offset > 0) {
         debugPrint("fetching more:");
 
-        BlocProvider.of<MoviePaginatedCubit>(context, listen: false)
-            .fetchMore(MoviesListType.topRated);
+        BlocProvider.of<PopularMoviesCubit>(context, listen: false)
+            .fetchMore(MoviesListType.popular);
         final state =
-            BlocProvider.of<MoviePaginatedCubit>(context, listen: false).state;
-        if (state is MoviePaginatedDataLoaded && state.fetchingMore) {
+            BlocProvider.of<PopularMoviesCubit>(context, listen: false).state;
+        if (state is PopularMoviesDataLoaded && state.fetchingMore) {
           _scrollController.jumpTo(_scrollController.offset + 160);
         }
       }
@@ -49,23 +50,24 @@ class _MovieListPageState extends State<MovieListPage> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<MoviePaginatedCubit>(context)
-        .loadMovieData(context: context, type: MoviesListType.topRated);
-    return BlocBuilder<MoviePaginatedCubit, MoviePaginatedState>(
+    BlocProvider.of<PopularMoviesCubit>(context)
+        .loadMovieData(context: context, type: MoviesListType.popular);
+    return BlocBuilder<PopularMoviesCubit, PopularMoviesState>(
         builder: (context, state) {
-      if (state is MoviePaginatedDataLoading) {
+      if (state is PopularMoviesDataLoading) {
         return const SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Responsive(
-              desktop: MoviePaginatedLoadingForDesktop(),
-              mobile: MoviePaginatedLoadingForMobile(),
-              tablet: MoviePaginatedLoadingForTablet(),
-            ));
+          scrollDirection: Axis.horizontal,
+          child: Responsive(
+            desktop: MoviePaginatedLoadingForDesktop(),
+            mobile: MoviePaginatedLoadingForMobile(),
+            tablet: MoviePaginatedLoadingForTablet(),
+          ),
+        );
       }
-      if (state is MoviePaginatedFaild) {
+      if (state is PopularMoviesFaild) {
         return Text(state.oldmoviesData.toString());
       }
-      if (state is MoviePaginatedDataLoaded) {
+      if (state is PopularMoviesDataLoaded) {
         final movies = state.moviesData.movie;
         final imageBasePath = dotenv.get('TMDB_IMAGE_BASE_URL_DESKTOP');
         return ListView.separated(
@@ -414,10 +416,10 @@ class BuildTopratedMovieListForDesktop extends StatelessWidget {
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
                 image: CachedNetworkImageProvider(
-                  movie.backdropPath != null
-                      ? imageBasePath + movie.backdropPath!
-                      : 'https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png',
-                ),
+                    movie.backdropPath != null
+                        ? imageBasePath + movie.backdropPath!
+                        : 'https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png',
+                    errorListener: () {}),
               ),
               border: Border.all(width: 0, color: Colors.transparent),
               borderRadius: const BorderRadius.all(Radius.circular(15))),

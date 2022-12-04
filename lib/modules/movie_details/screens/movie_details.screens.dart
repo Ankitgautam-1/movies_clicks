@@ -89,7 +89,8 @@ Widget buildScreenForMobile(
                   child: Hero(
                     tag: movie.id.toString(),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrlBaseMobile + movie.backdropPath,
+                      imageUrl:
+                          imageUrlBaseMobile + isPathEmpty(movie.backdropPath),
                       errorWidget: (context, url, error) {
                         return Image.asset(AllImages().kDefaultImage);
                       },
@@ -332,7 +333,7 @@ Widget buildScreenForTablet(
                   child: Hero(
                     tag: movie.id.toString(),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrlBase + movie.backdropPath,
+                      imageUrl: imageUrlBase + isPathEmpty(movie.backdropPath),
                       errorWidget: (context, url, error) {
                         return Image.asset(AllImages().kDefaultImage);
                       },
@@ -575,7 +576,7 @@ Widget buildScreenForDesktop(
                   child: Hero(
                     tag: movie.id.toString(),
                     child: CachedNetworkImage(
-                      imageUrl: imageUrlBase + movie.backdropPath,
+                      imageUrl: imageUrlBase + isPathEmpty(movie.backdropPath),
                       errorWidget: (context, url, error) {
                         return Image.asset(AllImages().kDefaultImage);
                       },

@@ -6,6 +6,7 @@ import 'package:movies_clicks/modules/homepage/cubit/movie_data_cubit.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_details_data_cubit.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_genres_cubit.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_paginated_cubit.dart';
+import 'package:movies_clicks/modules/homepage/cubit/popular_movies_cubit.dart';
 import 'package:movies_clicks/modules/homepage/model/movie_genres.model.dart';
 import 'package:movies_clicks/modules/homepage/repo/movies.repository.dart';
 import 'package:movies_clicks/modules/internet/internet_bloc.dart';
@@ -39,6 +40,9 @@ Future<void> main() async {
         BlocProvider(
             create: (BuildContext context) =>
                 MoviePaginatedCubit(movieRepository: movieRepository)),
+        BlocProvider(
+            create: (BuildContext context) =>
+                PopularMoviesCubit(movieRepository: movieRepository)),
       ],
       child: const App(),
     ),

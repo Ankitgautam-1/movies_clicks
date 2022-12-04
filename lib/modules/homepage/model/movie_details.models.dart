@@ -1,7 +1,7 @@
 class MovieDetailsModel {
   MovieDetailsModel({
     required this.adult,
-    required this.backdropPath,
+    this.backdropPath,
     this.belongsToCollection,
     required this.budget,
     required this.genres,
@@ -27,13 +27,13 @@ class MovieDetailsModel {
     required this.voteCount,
   });
   late final bool adult;
-  late final String backdropPath;
+  late final String? backdropPath;
   late final Object? belongsToCollection;
   late final int budget;
   late final List<Genres> genres;
   late final String homepage;
   late final int id;
-  late final String imdbId;
+  late final String? imdbId;
   late final String originalLanguage;
   late final String originalTitle;
   late final String overview;

@@ -68,6 +68,7 @@ Widget buildCarouselForDesktop(List<Movie> currentMovie) {
       return Builder(
         builder: (BuildContext context) {
           final imageUrlBase = dotenv.get('TMDB_IMAGE_BASE_URL_DESKTOP');
+
           return GestureDetector(
             onTap: () {
               GoRouter.of(context).pushNamed('MovieDeatails',
@@ -84,7 +85,9 @@ Widget buildCarouselForDesktop(List<Movie> currentMovie) {
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                       image: CachedNetworkImageProvider(
-                        imageUrlBase + movie.backdropPath,
+                        movie.backdropPath != null
+                            ? imageBasePath + movie.backdropPath!
+                            : 'https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png',
                       ),
                     ),
                     border: Border.all(width: 0, color: Colors.transparent),
@@ -223,7 +226,9 @@ Widget buildCarouselForTablet(List<Movie> currentMovie) {
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                       image: CachedNetworkImageProvider(
-                        imageUrlBase + movie.backdropPath,
+                        movie.backdropPath != null
+                            ? imageUrlBase + movie.backdropPath!
+                            : 'https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png',
                       ),
                     ),
                     border: Border.all(width: 0, color: Colors.transparent),
@@ -357,7 +362,9 @@ Widget buildCarouselForMobile(List<Movie> currentMovie) {
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                       image: CachedNetworkImageProvider(
-                        imageUrlBase + movie.posterPath,
+                        movie.posterPath != null
+                            ? imageUrlBase + movie.posterPath!
+                            : AllImages().imageNotFound,
                       ),
                     ),
                     border: Border.all(width: 0, color: Colors.transparent),

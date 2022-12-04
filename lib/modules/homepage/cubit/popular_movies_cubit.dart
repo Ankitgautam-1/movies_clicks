@@ -1,56 +1,56 @@
 import 'package:bloc/bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_data_cubit.dart';
 import 'package:movies_clicks/modules/homepage/model/movies_data.models.dart';
 import 'package:movies_clicks/modules/homepage/repo/movies.repository.dart';
 import 'package:movies_clicks/utils/is_path_empty.dart';
 
-part 'movie_paginated_state.dart';
+part 'popular_movies_state.dart';
 
-class MoviePaginatedCubit extends Cubit<MoviePaginatedState> {
-  MoviePaginatedCubit({required this.movieRepository})
-      : super(MoviePaginatedInitial());
+class PopularMoviesCubit extends Cubit<PopularMoviesState> {
+  PopularMoviesCubit({required this.movieRepository})
+      : super(PopularMoviesInitial());
   int page = 1;
   final MovieRepository movieRepository;
 
   void fetchMore(MoviesListType listType) async {
-    if (state is MoviePaginatedDataLoading) return;
-    if (state is MoviePaginatedDataLoaded) {
-      final currentState = state as MoviePaginatedDataLoaded;
+    if (state is PopularMoviesDataLoading) return;
+    if (state is PopularMoviesDataLoaded) {
+      final currentState = state as PopularMoviesDataLoaded;
 
       if (currentState.fetchingMore) {
         return;
       } else {
         if (currentState.page == currentState.moviesData.totalPages) {
-          return emit(MoviePaginatedDataLoaded(
+          return emit(PopularMoviesDataLoaded(
               moviesData: currentState.moviesData,
               isLastFetch: true,
               page: currentState.page,
               fetchingMore: true));
         }
         final page = currentState.page + 1;
-        emit(MoviePaginatedDataLoaded(
+        emit(PopularMoviesDataLoaded(
             moviesData: currentState.moviesData,
             isLastFetch: false,
             page: currentState.page,
             fetchingMore: true));
         try {
-          final moviePaginatedData = await movieRepository.moviesApiProvider
+          final popularMoviesData = await movieRepository.moviesApiProvider
               .fetchMovieList(listType, page: page);
-          currentState.moviesData.movie.addAll(moviePaginatedData.movie);
+          currentState.moviesData.movie.addAll(popularMoviesData.movie);
           debugPrint('currentState: ${currentState.moviesData.movie.length}');
           emit(
-            MoviePaginatedDataLoaded(
+            PopularMoviesDataLoaded(
                 moviesData: currentState.moviesData,
-                isLastFetch: page == moviePaginatedData.totalPages,
-                page: moviePaginatedData.page,
+                isLastFetch: page == popularMoviesData.totalPages,
+                page: popularMoviesData.page,
                 fetchingMore: false),
           );
         } catch (e) {
-          emit(MoviePaginatedFaild(
-              oldmoviesData: currentState.moviesData.movie));
+          emit(
+              PopularMoviesFaild(oldmoviesData: currentState.moviesData.movie));
         }
       }
     }
@@ -60,13 +60,13 @@ class MoviePaginatedCubit extends Cubit<MoviePaginatedState> {
   void loadMovieData(
       {required BuildContext context, required MoviesListType type}) async {
     debugPrint("loadMovieData");
-    if (state is MoviePaginatedDataLoading) return;
+    if (state is PopularMoviesDataLoading) return;
     var oldMoviesData = <Movie>[];
-    if (state is MoviePaginatedDataLoading) {
-      final currentState = state as MoviePaginatedDataLoaded;
+    if (state is PopularMoviesDataLoading) {
+      final currentState = state as PopularMoviesDataLoaded;
       oldMoviesData = currentState.moviesData.movie;
     }
-    emit(MoviePaginatedDataLoading(
+    emit(PopularMoviesDataLoading(
       isFirstFetch: page == 1,
       oldmoviesData: oldMoviesData,
     ));
@@ -76,17 +76,19 @@ class MoviePaginatedCubit extends Cubit<MoviePaginatedState> {
         .then((moviesData) async {
       page++;
       try {
-        final imageToLoad = getMoviesImagesList(moviesData.movie);
+        bool isAndroid = Theme.of(context).platform == TargetPlatform.android;
+        final imageToLoad = getMoviesImagesList(moviesData.movie, isAndroid);
+
         await Future.wait(
             imageToLoad.map((url) => cachedImage(context: context, url: url)));
         if (moviesData.page == moviesData.totalPages) {
-          emit(MoviePaginatedDataLoaded(
+          emit(PopularMoviesDataLoaded(
               page: 1,
               moviesData: moviesData,
               isLastFetch: true,
               fetchingMore: false));
         } else {
-          emit(MoviePaginatedDataLoaded(
+          emit(PopularMoviesDataLoaded(
               page: 1,
               moviesData: moviesData,
               isLastFetch: false,
@@ -95,21 +97,21 @@ class MoviePaginatedCubit extends Cubit<MoviePaginatedState> {
       } catch (e) {
         debugPrint("error :");
         debugPrint(e.toString());
-        emit(const MoviePaginatedFaild(oldmoviesData: []));
+        emit(const PopularMoviesFaild(oldmoviesData: []));
       }
     }).onError((error, stackTrace) {
       debugPrint("error :$error");
       debugPrint("stackTrace :$stackTrace");
 
-      emit(MoviePaginatedFaild(oldmoviesData: oldMoviesData));
+      emit(PopularMoviesFaild(oldmoviesData: oldMoviesData));
     });
   }
 }
 
-List<String> getMoviesImagesList(List<Movie> movies) {
+List<String> getMoviesImagesList(List<Movie> movies, bool isAndroid) {
   return movies
       .where((movie) => movie.backdropPath != null)
-      .map((movie) => imageBasePath + isPathEmpty(movie.posterPath))
+      .map((movie) => imageBasePath + isPathEmpty(movie.backdropPath))
       .toList();
 }
 

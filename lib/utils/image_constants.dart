@@ -9,8 +9,9 @@ class AllImages {
   String signup = 'assets/images/signup.png';
   String imageError = 'assets/images/error.png';
   String postorLogoError = 'assets/images/postor_logo_error.png';
-  String kDefaultImage =
-      'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
+  String kDefaultImage = 'assets/images/error.png';
+  String imageNotFound =
+      "https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png";
   String onboarding_1_backGroundImage =
       'assets/images/onboarding/spiderman.png';
   String onboarding_1_featureImage =

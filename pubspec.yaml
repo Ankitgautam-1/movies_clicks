@@ -91,7 +91,7 @@ flutter_icons:
     theme_color: "#00FFFFFF"
   windows:
     generate: true
-    image_path: "assets/icon/white_app_logo.png"
+    image_path: "assets/icon/black_app_logo.png"
     icon_size: 48
   macos:
     generate: true

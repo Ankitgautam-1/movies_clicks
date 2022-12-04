@@ -107,14 +107,14 @@ class Movie {
   });
 
   final bool adult;
-  final String backdropPath;
+  final String? backdropPath;
   final List<int> genreIds;
   final int id;
   final OriginalLanguage originalLanguage;
   final String originalTitle;
   final String overview;
   final double popularity;
-  final String posterPath;
+  final String? posterPath;
   final DateTime releaseDate;
   final String title;
   final bool video;
@@ -213,4 +213,4 @@ class EnumValues<T> {
   }
 }
 
-enum MoviesListType { nowPlaying, upcoming, topRated }
+enum MoviesListType { nowPlaying, upcoming, topRated, popular }

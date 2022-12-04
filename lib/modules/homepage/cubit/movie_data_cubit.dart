@@ -4,12 +4,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:movies_clicks/modules/homepage/repo/movies.repository.dart';
+import 'package:movies_clicks/utils/is_path_empty.dart';
 
 import '../model/movies_data.models.dart';
 
 part 'movie_data_state.dart';
 
 final imageBasePath = dotenv.get('TMDB_IMAGE_BASE_URL');
+final imageBasePathAndroid = dotenv.get('TMDB_IMAGE_BASE_URL');
 
 class MovieDataCubit extends Cubit<MovieDataState> {
   MovieDataCubit({required this.movieRepository}) : super(MovieDataInitial());
@@ -46,7 +48,10 @@ class MovieDataCubit extends Cubit<MovieDataState> {
 }
 
 List<String> getMoviesImagesList(List<Movie> movies) {
-  return movies.map((movie) => imageBasePath + movie.posterPath).toList();
+  return movies
+      .where((movie) => movie.backdropPath != null)
+      .map((movie) => imageBasePath + isPathEmpty(movie.posterPath))
+      .toList();
 }
 
 Future cachedImage({required BuildContext context, required String url}) =>

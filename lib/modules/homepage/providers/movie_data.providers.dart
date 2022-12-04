@@ -98,6 +98,11 @@ String getMovieType(MoviesListType type) {
       {
         return "top_rated";
       }
+    case MoviesListType.popular:
+      {
+        return 'popular';
+      }
+
     default:
       {
         return "now_playing";

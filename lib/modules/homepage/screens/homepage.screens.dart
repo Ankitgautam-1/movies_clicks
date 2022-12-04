@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_clicks/common_export.dart';
 import 'package:movies_clicks/modules/homepage/widgets/movies_list.widget.dart';
 import 'package:movies_clicks/modules/homepage/widgets/movies_pagination.dart';
+import 'package:movies_clicks/modules/homepage/widgets/popular_movies_list.widgets.dart';
 import 'package:movies_clicks/modules/internet/internet_bloc.dart';
 import 'package:movies_clicks/modules/movie_details/screens/movie_details.screens.dart';
 
@@ -93,6 +94,18 @@ class _HomepagePageState extends State<HomepagePage>
                   } else {
                     return Column(
                       children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.only(left: 10, bottom: 10),
+                          child: const Text(
+                            "Top Upcoming",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                         const Responsive(
                             mobile: SizedBox(height: 450, child: MoviesList()),
                             tablet: SizedBox(height: 500, child: MoviesList()),
@@ -103,9 +116,9 @@ class _HomepagePageState extends State<HomepagePage>
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.only(left: 10, bottom: 10),
                           child: const Text(
-                            "Popular on Netflix",
+                            "Top Rated",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 20.0,
@@ -120,6 +133,28 @@ class _HomepagePageState extends State<HomepagePage>
                                 SizedBox(height: 400, child: MovieListPage()),
                             desktop:
                                 SizedBox(height: 400, child: MovieListPage())),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 10),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.only(left: 10, bottom: 10),
+                          child: const Text(
+                            "Popular Movies",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const Responsive(
+                            mobile: SizedBox(
+                                height: 250, child: PopularMovieList()),
+                            tablet: SizedBox(
+                                height: 400, child: PopularMovieList()),
+                            desktop: SizedBox(
+                                height: 400, child: PopularMovieList())),
                         const Padding(
                           padding: EdgeInsets.only(top: 10),
                         ),
