@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:go_router/go_router.dart';
 import 'package:movies_clicks/utils/string_const.dart';
+import 'package:movies_clicks/utils/theme_color_switch.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:movies_clicks/common_export.dart';
@@ -48,7 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-        backgroundColor: ColorConstants().darkBackgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: LayoutBuilder(builder: (context, constraints) {
           return SingleChildScrollView(
             child: ConstrainedBox(
@@ -269,25 +270,24 @@ class _ScreensState extends State<Screens>
                         ),
                       ),
                       Positioned.fill(
-                          child: Container(
-                        decoration: BoxDecoration(
+                        child: Container(
+                          decoration: BoxDecoration(
                             color: Colors.white,
                             gradient: LinearGradient(
-                                begin: FractionalOffset.topCenter,
-                                end: FractionalOffset.bottomCenter,
-                                colors: [
-                                  Colors.grey.withOpacity(0.0),
-                                  Colors.grey.withOpacity(0.0),
-                                  ColorConstants()
-                                      .darkBackgroundColor
-                                      .withOpacity(1),
-                                ],
-                                stops: const [
-                                  0.0,
-                                  0.8,
-                                  1.0
-                                ])),
-                      )),
+                              begin: FractionalOffset.topCenter,
+                              end: FractionalOffset.bottomCenter,
+                              colors: [
+                                Colors.grey.withOpacity(0.0),
+                                Colors.grey.withOpacity(0.0),
+                                Theme.of(context)
+                                    .scaffoldBackgroundColor
+                                    .withOpacity(1),
+                              ],
+                              stops: const [0.0, 0.8, 1.0],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -322,15 +322,19 @@ class _ScreensState extends State<Screens>
             children: [
               Text(
                 widget.title.toUpperCase(),
-                style: const TextStyle(
-                    color: Colors.white,
+                style: TextStyle(
+                    color: themeColorSwitch(context,
+                        darkColor: Colors.white,
+                        lightColor: Colors.black.withOpacity(0.8)),
                     fontSize: 23,
                     fontWeight: FontWeight.w700),
               ),
               Text(
                 widget.subTitle.toUpperCase(),
                 style: TextStyle(
-                    color: Colors.grey.withOpacity(0.8),
+                    color: themeColorSwitch(context,
+                        darkColor: Colors.grey.withOpacity(0.8),
+                        lightColor: Colors.grey.shade600),
                     fontSize: 12,
                     fontWeight: FontWeight.w500),
               ),

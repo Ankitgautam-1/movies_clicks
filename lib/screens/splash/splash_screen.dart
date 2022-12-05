@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: const Center(
         child: Text(
-          "Movie Clicks",
+          "Movies Clicks",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
         ),
       ),
