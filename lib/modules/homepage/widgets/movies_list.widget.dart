@@ -86,7 +86,7 @@ Widget buildCarouselForDesktop(List<Movie> currentMovie) {
                       alignment: Alignment.topCenter,
                       image: CachedNetworkImageProvider(
                         movie.backdropPath != null
-                            ? imageBasePath + movie.backdropPath!
+                            ? imageUrlBase + movie.backdropPath!
                             : 'https://www.ncenet.com/wp-content/uploads/2020/04/no-image-png-2.png',
                       ),
                     ),

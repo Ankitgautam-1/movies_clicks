@@ -231,11 +231,9 @@ ThemeData darkTheme() {
         )),
     appBarTheme: AppBarTheme(
         systemOverlayStyle: const SystemUiOverlayStyle(
-           systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.dark,
-          systemNavigationBarDividerColor: Colors.transparent,
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.dark,
         ),
         centerTitle: true,
@@ -326,18 +324,15 @@ ThemeData darkTheme() {
 
 ThemeData lightTheme() {
   return ThemeData(
-    
     snackBarTheme: SnackBarThemeData(
         backgroundColor: Colors.grey.shade900,
         actionTextColor: Colors.deepPurpleAccent.shade700,
         contentTextStyle: const TextStyle(color: Colors.white)),
     appBarTheme: AppBarTheme(
         systemOverlayStyle: const SystemUiOverlayStyle(
-            systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.light,
-          systemNavigationBarDividerColor: Colors.transparent,
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
         ),
         centerTitle: true,

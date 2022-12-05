@@ -32,7 +32,7 @@ class _HomepagePageState extends State<HomepagePage>
           centerTitle: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0.0,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          
         ),
         body: SizedBox(
           child: ScrollConfiguration(

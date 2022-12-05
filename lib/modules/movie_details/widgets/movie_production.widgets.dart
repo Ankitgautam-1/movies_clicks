@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:movies_clicks/common_export.dart';
 import 'package:movies_clicks/modules/homepage/model/movie_details.models.dart';
@@ -11,14 +12,16 @@ class MoviePriductionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrlBaseMobile = dotenv.get('TMDB_IMAGE_BASE_URL');
-
+    if (productionCompanies.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: productionCompanies
             .map((companies) => Container(
                   decoration: BoxDecoration(
-                      color: ColorConstants().darkBackgroundColor,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(5)),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

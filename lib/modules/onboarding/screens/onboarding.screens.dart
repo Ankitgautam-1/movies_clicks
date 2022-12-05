@@ -282,7 +282,7 @@ class _ScreensState extends State<Screens>
                                       .darkBackgroundColor
                                       .withOpacity(1),
                                 ],
-                                stops: [
+                                stops: const [
                                   0.0,
                                   0.8,
                                   1.0

@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
@@ -11,13 +10,17 @@ import 'package:movies_clicks/common_export.dart';
 import 'package:movies_clicks/config/screens_config.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_details_data_cubit.dart';
 import 'package:movies_clicks/modules/homepage/cubit/movie_genres_cubit.dart';
-import 'package:movies_clicks/modules/homepage/model/movie_genres.model.dart';
+
 import 'package:movies_clicks/modules/homepage/model/movies_data.models.dart';
 import 'package:movies_clicks/modules/homepage/widgets/movie_genres.widget.dart';
+import 'package:movies_clicks/modules/movie_details/widgets/movie_genres.widgets.dart';
 import 'package:movies_clicks/modules/movie_details/widgets/movie_overview.widget.dart';
 import 'package:movies_clicks/modules/movie_details/widgets/movie_production.widgets.dart';
+import 'package:movies_clicks/modules/movie_details/widgets/movie_production_loading.widgets.dart';
+import 'package:movies_clicks/modules/movie_details/widgets/movies_production_countries.widgets.dart';
 import 'package:movies_clicks/utils/is_path_empty.dart';
 import 'package:movies_clicks/utils/theme_color_switch.dart';
+import 'package:shimmer_pro/shimmer_pro.dart';
 
 class MovieDetails extends StatefulWidget {
   const MovieDetails({super.key, required this.movie_id, this.movie});
@@ -230,7 +233,7 @@ Widget buildScreenForMobile(
                 BlocBuilder<MovieGenresCubit, MovieGenresState>(
                   builder: (context, state) {
                     if (state is MovieGenresLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const MovieGenreLoading();
                     }
                     if (state is MovieGenresLoaded) {
                       final filterGenres =
@@ -262,54 +265,83 @@ Widget buildScreenForMobile(
               ],
             ),
           ),
-          BlocConsumer<MovieDetailsDataCubit, MovieDetailsDataState>(
-            builder: (context, state) {
-              if (state is MovieDetailsDataLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (state is MovieDetailsDataFaild) {
-                return const Center(child: Text("Something went wrong"));
-              }
-              if (state is MovieDetailsDataLoaded) {
-                final productionCompanies =
-                    state.movieDetails.productionCompanies;
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  width: double.infinity,
-                  child: Column(
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: BlocBuilder<MovieDetailsDataCubit, MovieDetailsDataState>(
+              builder: (context, state) {
+                debugPrint("state $state");
+                if (state is MovieDetailsDataLoading) {
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      state.movieDetails.status != "Released"
-                          ? Center(
-                              child: Text(state.movieDetails.status.toString()),
-                            )
-                          : const SizedBox.shrink(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Production Countries",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w700),
-                          ),
-                          Text(state.movieDetails.productionCountries[0].name),
-                        ],
+                      ShimmerPro.sized(
+                        alignment: Alignment.centerLeft,
+                        height: 15,
+                        borderRadius: 5,
+                        scaffoldBackgroundColor: Colors.grey.shade600,
+                        width: 150,
                       ),
-                      if (productionCompanies.isNotEmpty)
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: MoviePriductionList(
-                              productionCompanies: productionCompanies),
-                        )
+                      ShimmerPro.sized(
+                        alignment: Alignment.centerLeft,
+                        height: 15,
+                        borderRadius: 5,
+                        scaffoldBackgroundColor: Colors.grey.shade600,
+                        width: 50,
+                      ),
+                      const MovieProductionLoading(),
                     ],
-                  ),
-                );
-              }
-              return const SizedBox();
-            },
-            listener: (context, state) {},
+                  );
+                }
+                if (state is MovieDetailsDataFaild) {
+                  return const Center(child: Text("Something went wrong"));
+                }
+                if (state is MovieDetailsDataLoaded) {
+                  final productionCompanies =
+                      state.movieDetails.productionCompanies;
+                  debugPrint(
+                      'productionCompanies: ${productionCompanies.length}');
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        state.movieDetails.status != "Released"
+                            ? Center(
+                                child:
+                                    Text(state.movieDetails.status.toString()),
+                              )
+                            : const SizedBox.shrink(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Production Countries",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w700),
+                            ),
+                            MovieProductionCountries(
+                              movieProductionCountries:
+                                  state.movieDetails.productionCountries,
+                            ),
+                          ],
+                        ),
+                        if (productionCompanies.isNotEmpty)
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: MoviePriductionList(
+                                productionCompanies: productionCompanies),
+                          )
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
           ),
         ],
       ),
@@ -473,7 +505,7 @@ Widget buildScreenForTablet(
                 BlocBuilder<MovieGenresCubit, MovieGenresState>(
                   builder: (context, state) {
                     if (state is MovieGenresLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const MovieGenreLoading();
                     }
                     if (state is MovieGenresLoaded) {
                       final filterGenres =
@@ -505,54 +537,78 @@ Widget buildScreenForTablet(
               ],
             ),
           ),
-          BlocConsumer<MovieDetailsDataCubit, MovieDetailsDataState>(
-            builder: (context, state) {
-              if (state is MovieDetailsDataLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (state is MovieDetailsDataFaild) {
-                return const Center(child: Text("Something went wrong"));
-              }
-              if (state is MovieDetailsDataLoaded) {
-                final productionCompanies =
-                    state.movieDetails.productionCompanies;
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  width: double.infinity,
-                  child: Column(
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: BlocBuilder<MovieDetailsDataCubit, MovieDetailsDataState>(
+              builder: (context, state) {
+                if (state is MovieDetailsDataLoading) {
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      state.movieDetails.status != "Released"
-                          ? Center(
-                              child: Text(state.movieDetails.status.toString()),
-                            )
-                          : const SizedBox.shrink(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Production Countries",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w700),
-                          ),
-                          Text(state.movieDetails.productionCountries[0].name),
-                        ],
+                      ShimmerPro.sized(
+                        alignment: Alignment.centerLeft,
+                        height: 15,
+                        borderRadius: 5,
+                        scaffoldBackgroundColor: Colors.grey.shade600,
+                        width: 150,
                       ),
-                      if (productionCompanies.isNotEmpty)
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: MoviePriductionList(
-                              productionCompanies: productionCompanies),
-                        )
+                      ShimmerPro.sized(
+                        alignment: Alignment.centerLeft,
+                        height: 15,
+                        borderRadius: 5,
+                        scaffoldBackgroundColor: Colors.grey.shade600,
+                        width: 50,
+                      ),
+                      const MovieProductionLoading(),
                     ],
-                  ),
-                );
-              }
-              return const SizedBox();
-            },
-            listener: (context, state) {},
+                  );
+                }
+                if (state is MovieDetailsDataFaild) {
+                  return const Center(child: Text("Something went wrong"));
+                }
+                if (state is MovieDetailsDataLoaded) {
+                  final productionCompanies =
+                      state.movieDetails.productionCompanies;
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        state.movieDetails.status != "Released"
+                            ? Center(
+                                child:
+                                    Text(state.movieDetails.status.toString()),
+                              )
+                            : const SizedBox.shrink(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Production Countries",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                                state.movieDetails.productionCountries[0].name),
+                          ],
+                        ),
+                        if (productionCompanies.isNotEmpty)
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: MoviePriductionList(
+                                productionCompanies: productionCompanies),
+                          )
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
           ),
         ],
       ),
@@ -716,7 +772,7 @@ Widget buildScreenForDesktop(
                 BlocBuilder<MovieGenresCubit, MovieGenresState>(
                   builder: (context, state) {
                     if (state is MovieGenresLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const MovieGenreLoading();
                     }
                     if (state is MovieGenresLoaded) {
                       final filterGenres =
@@ -748,73 +804,81 @@ Widget buildScreenForDesktop(
               ],
             ),
           ),
-          BlocConsumer<MovieDetailsDataCubit, MovieDetailsDataState>(
-            builder: (context, state) {
-              if (state is MovieDetailsDataLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (state is MovieDetailsDataFaild) {
-                return const Center(child: Text("Something went wrong"));
-              }
-              if (state is MovieDetailsDataLoaded) {
-                final productionCompanies =
-                    state.movieDetails.productionCompanies;
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  width: double.infinity,
-                  child: Column(
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: BlocBuilder<MovieDetailsDataCubit, MovieDetailsDataState>(
+              builder: (context, state) {
+                if (state is MovieDetailsDataLoading) {
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      state.movieDetails.status != "Released"
-                          ? Center(
-                              child: Text(state.movieDetails.status.toString()),
-                            )
-                          : const SizedBox.shrink(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Production Countries",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w700),
-                          ),
-                          Text(state.movieDetails.productionCountries[0].name),
-                        ],
+                      ShimmerPro.sized(
+                        alignment: Alignment.centerLeft,
+                        height: 15,
+                        borderRadius: 5,
+                        scaffoldBackgroundColor: Colors.grey.shade600,
+                        width: 150,
                       ),
-                      if (productionCompanies.isNotEmpty)
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: MoviePriductionList(
-                              productionCompanies: productionCompanies),
-                        )
+                      ShimmerPro.sized(
+                        alignment: Alignment.centerLeft,
+                        height: 15,
+                        borderRadius: 5,
+                        scaffoldBackgroundColor: Colors.grey.shade600,
+                        width: 50,
+                      ),
+                      const MovieProductionLoading(),
                     ],
-                  ),
-                );
-              }
-              return const SizedBox();
-            },
-            listener: (context, state) {},
+                  );
+                }
+                if (state is MovieDetailsDataFaild) {
+                  return const Center(child: Text("Something went wrong"));
+                }
+                if (state is MovieDetailsDataLoaded) {
+                  final productionCompanies =
+                      state.movieDetails.productionCompanies;
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        state.movieDetails.status != "Released"
+                            ? Center(
+                                child:
+                                    Text(state.movieDetails.status.toString()),
+                              )
+                            : const SizedBox.shrink(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Production Countries",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                                state.movieDetails.productionCountries[0].name),
+                          ],
+                        ),
+                        if (productionCompanies.isNotEmpty)
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: MoviePriductionList(
+                                productionCompanies: productionCompanies),
+                          )
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
           ),
         ],
       ),
     ],
   );
 }
-
-List<Container> buildGenres(List<Genres> genres) => genres
-    .map(
-      (genre) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-        margin: const EdgeInsets.only(right: 10),
-        decoration: BoxDecoration(
-            color: Colors.grey.shade600,
-            borderRadius: BorderRadius.circular(20)),
-        child: Text(
-          genre.name.toString(),
-          style: const TextStyle(color: Colors.white),
-        ),
-      ),
-    )
-    .toList();
