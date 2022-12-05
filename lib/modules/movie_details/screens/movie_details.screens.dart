@@ -52,9 +52,8 @@ class _MovieDetailsState extends State<MovieDetails> {
     final imageUrlBaseMobile = dotenv.get('TMDB_IMAGE_BASE_URL');
 
     return Scaffold(
-      appBar: appBar,
       body: SizedBox(
-        height: getCurrentScreenHeight(context) - appBar.preferredSize.height,
+        height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
           child: Responsive(
             mobile: buildScreenForMobile(
