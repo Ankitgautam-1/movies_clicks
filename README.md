@@ -28,5 +28,6 @@ If the NDK is not installed, you can install it via Android Studio by going to t
 
 And then the _SDK Location_ section. It will show you the NDK path, or the option to Download it if you don't have it installed.
 
-### Android App
-[![Android Example]](https://www.youtube.com/watch?v=TMTn7U9IovQ)
+[![Final video of fixing issues in your code in VS Code]
+(https://img.youtube.com/vi/TMTn7U9IovQ/maxresdefault.jpg)]
+(https://www.youtube.com/watch?v=TMTn7U9IovQ)
