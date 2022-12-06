@@ -27,3 +27,6 @@ If you have Android Studio installed, make sure `$ANDROID_NDK` is available.
 If the NDK is not installed, you can install it via Android Studio by going to the menu _File > Project Structure_.
 
 And then the _SDK Location_ section. It will show you the NDK path, or the option to Download it if you don't have it installed.
+
+### Android App
+[![Android Example]](https://www.youtube.com/watch?v=TMTn7U9IovQ)
