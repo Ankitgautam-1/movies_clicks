@@ -52,8 +52,10 @@ class _MovieDetailsState extends State<MovieDetails> {
     final imageUrlBaseMobile = dotenv.get('TMDB_IMAGE_BASE_URL');
 
     return Scaffold(
+      appBar:
+          Theme.of(context).platform == TargetPlatform.windows ? appBar : null,
       body: SizedBox(
-        height: MediaQuery.of(context).size.height,
+        height: screenHeight(context, appBar),
         child: SingleChildScrollView(
           child: Responsive(
             mobile: buildScreenForMobile(
@@ -72,6 +74,29 @@ class _MovieDetailsState extends State<MovieDetails> {
         ),
       ),
     );
+  }
+}
+
+double screenHeight(BuildContext context, AppBar appbar) {
+  double currentScreenHeight = MediaQuery.of(context).size.height;
+  TargetPlatform targetPlatform = Theme.of(context).platform;
+
+  if (targetPlatform == TargetPlatform.android ||
+      targetPlatform == TargetPlatform.iOS) {
+    return currentScreenHeight;
+  } else {
+    return currentScreenHeight - appbar.preferredSize.height;
+  }
+}
+
+AppBar? buildAppBar(BuildContext context, AppBar appbar) {
+  TargetPlatform targetPlatform = Theme.of(context).platform;
+
+  if (targetPlatform == TargetPlatform.android ||
+      targetPlatform == TargetPlatform.iOS) {
+    return null;
+  } else {
+    return appbar;
   }
 }
 
